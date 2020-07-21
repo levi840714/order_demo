@@ -3,7 +3,7 @@ package schema
 import "time"
 
 type Order struct {
-	ID        int       `gorm:"column:id;type:int;PRIMARY_KEY;AUTO_INCREMENT;NOT NULL"`
+	ID        int       `gorm:"column:id;AUTO_INCREMENT"`
 	AccountId string    `gorm:"column:accountId;type:varchar(12);FOREIGNKEY:;NOT NULL"`
 	Goods     string    `gorm:"column:goods;type:varchar(20);NOT NULL"`
 	Amount    float64   `gorm:"column:amount;type:decimal(12, 2);NOT NULL"`
