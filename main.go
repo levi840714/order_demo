@@ -5,6 +5,7 @@ import (
 	"order_demo/config"
 	"order_demo/model"
 	"order_demo/router"
+	"order_demo/schema"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -20,6 +21,7 @@ func main() {
 	if err != nil {
 		panic("DB connect fail!")
 	}
+	model.DB.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").AutoMigrate(schema.AllSchema...)
 	defer model.DB.Close()
 
 	// setup routers
