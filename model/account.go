@@ -1,6 +1,8 @@
 package model
 
 import (
+	"errors"
+	"order_demo/lib"
 	"time"
 )
 
@@ -18,7 +20,8 @@ func (Account) TableName() string {
 }
 
 func RegisterAccount(account string, password string) (code int, err error) {
-	createData := Account{Account: account, Password: password, Status: "1", Balance: 0.0, CreateAt: time.Now()}
+	hash, _ := lib.HashPassword(password)
+	createData := Account{Account: account, Password: hash, Status: "1", Balance: 0.0, CreateAt: time.Now()}
 	if err := DB.Create(&createData).Error; err != nil {
 		return 1, err
 	}
@@ -34,10 +37,14 @@ func GetAccount(accountId int) (*Account, error) {
 	return &account, nil
 }
 
-func CheckLogin(account string, password string) bool {
+func CheckLogin(account string, password string) (bool, error) {
 	var login Account
-	if err := DB.Where("account = ? AND password = ?", account, password).Find(&login).Error; err != nil {
-		return false
+	if err := DB.Select("password").Where("account = ?", account).Find(&login).Error; err != nil {
+		return false, errors.New("wrong Account")
 	}
-	return true
+	check := lib.CheckPasswordHash(password, login.Password)
+	if !check {
+		return false, errors.New("wrong password")
+	}
+	return true, nil
 }

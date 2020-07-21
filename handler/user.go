@@ -37,9 +37,9 @@ func Login(c *gin.Context) {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	check := model.CheckLogin(request.Account, request.Password)
+	check, err := model.CheckLogin(request.Account, request.Password)
 	if !check {
-		c.JSON(500, gin.H{"code": 1, "msg": "login failed", "data": ""})
+		c.JSON(500, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
 	c.JSON(200, gin.H{"code": 0, "msg": "login success", "data": ""})
