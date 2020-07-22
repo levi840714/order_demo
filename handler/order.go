@@ -9,8 +9,7 @@ import (
 )
 
 type DepositData struct {
-	AccountId int     `json:"column:id"`
-	Amount    float64 `json:"amount" binding:"required"`
+	Amount float64 `json:"amount" binding:"required"`
 }
 
 func Deposit(c *gin.Context) {
@@ -21,11 +20,19 @@ func Deposit(c *gin.Context) {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	request.AccountId = accountId
-	result := model.AddTransfer(request.AccountId, request.Amount)
-	if !result {
+	transferId, err := model.AddTransfer(accountId, request.Amount)
+	if err != nil {
 		c.JSON(500, gin.H{"code": 1, "msg": "Transfer failed", "data": ""})
 		return
 	}
-	c.JSON(200, gin.H{"code": 0, "msg": "Transfer success", "data": ""})
+	balance, err := model.UpdateBalance(accountId, request.Amount)
+	if err != nil {
+		c.JSON(500, gin.H{"code": 1, "msg": "Transfer failed", "data": ""})
+		return
+	}
+	returnData := map[string]interface{}{
+		"transferId": transferId,
+		"balance":    balance,
+	}
+	c.JSON(200, gin.H{"code": 0, "msg": "Transfer success", "data": returnData})
 }

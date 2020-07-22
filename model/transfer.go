@@ -16,11 +16,11 @@ func (Transfer) TableName() string {
 	return "transfer"
 }
 
-func AddTransfer(accountId int, amount float64) bool {
+func AddTransfer(accountId int, amount float64) (int, error) {
 	insert := Transfer{AccountId: accountId, Amount: amount, TransferTime: time.Now()}
 	if err := DB.Create(&insert).Error; err != nil {
 		logger.Error.Println(err.Error())
-		return false
+		return 0, err
 	}
-	return true
+	return insert.ID, nil
 }

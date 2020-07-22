@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"order_demo/lib/hash"
+	"order_demo/lib/logger"
 	"time"
 )
 
@@ -53,4 +54,17 @@ func CheckLogin(account string, password string) (*Account, error) {
 		return nil, errors.New("wrong password")
 	}
 	return &accountData, nil
+}
+
+func UpdateBalance(accountId int, amount float64) (float64, error) {
+	var accountData Account
+	if err := DB.Where("id = ? AND status = ?", accountId, StatusOK).Find(&accountData).Error; err != nil {
+		logger.Error.Println(err.Error())
+		return 0, err
+	}
+	accountData.Balance += amount
+	if err := DB.Save(&accountData).Error; err != nil {
+		return 0, err
+	}
+	return accountData.Balance, nil
 }
