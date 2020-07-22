@@ -19,6 +19,11 @@ func CheckJwtValid(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	if claims.Role == 0 || claims.AccountId == 0 {
+		c.JSON(500, gin.H{"code": 1, "msg": "Token parse failed", "data": ""})
+		c.Abort()
+		return
+	}
 	c.Set("role", claims.Role)
 	c.Set("accountId", claims.AccountId)
 	c.Next()

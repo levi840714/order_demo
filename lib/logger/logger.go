@@ -24,11 +24,3 @@ func init() {
 	Error = log.New(io.MultiWriter(os.Stderr, errFile), "Error:", log.Ldate|log.Ltime|log.Lshortfile)
 
 }
-
-func Println(v ...interface{}) {
-	Error.Println(v...)
-}
-
-func Printf(format string, v ...interface{}) {
-	Error.Printf(format, v...)
-}
