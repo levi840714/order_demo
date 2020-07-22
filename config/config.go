@@ -1,7 +1,9 @@
 package config
 
 import (
+	"log"
 	"os"
+	"strconv"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -20,22 +22,61 @@ type Redis struct {
 	Auth string `json:"Auth"`
 }
 
+type Jwt struct {
+	Secret   []byte `json:"Secret"`
+	LifeTime int    `json:"LifeTime" `
+}
+
 type MyConfig struct {
 	Mysql
 	Redis
+	Jwt
 }
 
 var Config = MyConfig{
 	Mysql: Mysql{
-		Ip:       os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		User:     os.Getenv("DB_USERNAME"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Db:       os.Getenv("DB_NAME"),
+		Ip:       GetStr("DB_HOST"),
+		Port:     GetStr("DB_PORT"),
+		User:     GetStr("DB_USERNAME"),
+		Password: GetStr("DB_PASSWORD"),
+		Db:       GetStr("DB_NAME"),
 	},
 	Redis: Redis{
-		Ip:   os.Getenv("REDIS_ENDPOINT"),
-		Port: os.Getenv("REDIS_PORT"),
-		Auth: os.Getenv("REDIS_AUTH"),
+		Ip:   GetStr("REDIS_ENDPOINT"),
+		Port: GetStr("REDIS_PORT"),
+		Auth: GetStr("REDIS_AUTH"),
 	},
+	Jwt: Jwt{
+		Secret:   GetBytes("SECRET_KEY"),
+		LifeTime: GetInt("TOKEN_LIFETIME"),
+	},
+}
+
+func GetStr(key string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		log.Panic(`Environmental variable [` + key + `] don't exists`)
+	}
+	return value
+}
+
+func GetInt(key string) int {
+	value := os.Getenv(key)
+	if value == "" {
+		log.Panic(`Environmental variable [` + key + `] don't exists`)
+	}
+	output, err := strconv.Atoi(value)
+	if err != nil {
+		log.Panic(`Environmental variable [` + key + `] is not an integer`)
+	}
+
+	return output
+}
+
+func GetBytes(key string) []byte {
+	value := os.Getenv(key)
+	if value == "" {
+		log.Panic(`Environmental variable [` + key + `] don't exists`)
+	}
+	return []byte(value)
 }

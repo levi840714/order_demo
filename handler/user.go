@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"order_demo/lib/auth"
 	"order_demo/model"
 
 	"github.com/gin-gonic/gin"
@@ -18,12 +19,12 @@ func Register(c *gin.Context) {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	code, err := model.RegisterAccount(request.Account, request.Password)
-	if code != 0 {
+	ok, err := model.RegisterAccount(request.Account, request.Password)
+	if !ok {
 		c.JSON(500, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	c.JSON(200, gin.H{"code": 0, "msg": "register success", "data": ""})
+	c.JSON(200, gin.H{"code": 0, "msg": "Register success", "data": ""})
 }
 
 type LoginAccount struct {
@@ -37,10 +38,16 @@ func Login(c *gin.Context) {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	check, err := model.CheckLogin(request.Account, request.Password)
-	if !check {
+	accountData, err := model.CheckLogin(request.Account, request.Password)
+	if err != nil {
 		c.JSON(500, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	c.JSON(200, gin.H{"code": 0, "msg": "login success", "data": ""})
+
+	token, err := auth.Sign(accountData.ID, accountData.Role)
+	if err != nil {
+		c.JSON(500, gin.H{"code": 1, "msg": "Get account token failed", "data": ""})
+	}
+	c.Header("Authorization", token)
+	c.JSON(200, gin.H{"code": 0, "msg": "Login success", "data": token})
 }
