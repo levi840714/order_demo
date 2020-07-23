@@ -18,7 +18,7 @@ func (Transfer) TableName() string {
 
 func AddTransfer(accountId int, amount float64) (int, error) {
 	insert := Transfer{AccountId: accountId, Amount: amount, TransferTime: time.Now()}
-	if err := DB.Create(&insert).Error; err != nil {
+	if err := TX.Create(&insert).Error; err != nil {
 		logger.Error.Println(err.Error())
 		return 0, err
 	}

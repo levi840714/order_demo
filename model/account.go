@@ -58,12 +58,12 @@ func CheckLogin(account string, password string) (*Account, error) {
 
 func UpdateBalance(accountId int, amount float64) (float64, error) {
 	var accountData Account
-	if err := DB.Where("id = ? AND status = ?", accountId, StatusOK).Find(&accountData).Error; err != nil {
+	if err := TX.Set("gorm:query_option", "FOR UPDATE").Where("id = ? AND status = ?", accountId, StatusOK).Find(&accountData).Error; err != nil {
 		logger.Error.Println(err.Error())
 		return 0, err
 	}
 	accountData.Balance += amount
-	if err := DB.Save(&accountData).Error; err != nil {
+	if err := TX.Save(&accountData).Error; err != nil {
 		return 0, err
 	}
 	return accountData.Balance, nil

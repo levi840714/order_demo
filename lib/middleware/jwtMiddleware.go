@@ -9,13 +9,13 @@ import (
 func CheckJwtValid(c *gin.Context) {
 	authToken := c.GetHeader("Authorization")
 	if authToken == "" {
-		c.JSON(400, gin.H{"code": 1, "msg": "Please login! ", "data": ""})
+		c.JSON(401, gin.H{"code": 1, "msg": "Please login! ", "data": ""})
 		c.Abort()
 		return
 	}
 	claims, err := auth.Verify(authToken)
 	if err != nil {
-		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
+		c.JSON(401, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		c.Abort()
 		return
 	}

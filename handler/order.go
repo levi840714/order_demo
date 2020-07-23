@@ -20,19 +20,28 @@ func Deposit(c *gin.Context) {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
+
+	model.TX = model.DB.Begin()
 	transferId, err := model.AddTransfer(accountId, request.Amount)
 	if err != nil {
+		model.TX.Rollback()
+		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Transfer failed", "data": ""})
 		return
 	}
+
 	balance, err := model.UpdateBalance(accountId, request.Amount)
 	if err != nil {
+		model.TX.Rollback()
+		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Transfer failed", "data": ""})
 		return
 	}
-	returnData := map[string]interface{}{
+	model.TX.Commit()
+
+	successData := map[string]interface{}{
 		"transferId": transferId,
 		"balance":    balance,
 	}
-	c.JSON(200, gin.H{"code": 0, "msg": "Transfer success", "data": returnData})
+	c.JSON(200, gin.H{"code": 0, "msg": "Transfer success!", "data": successData})
 }
