@@ -11,11 +11,21 @@ func SetupRouters() *gin.Engine {
 	router := gin.Default()
 	router.POST("/login", handler.Login)
 	router.POST("/register", handler.Register)
+	admin := router.Group("/admin")
 	api := router.Group("/api")
+
 	api.Use(middleware.CheckJwtValid)
 	{
 		api.POST("/deposit", handler.Deposit)
 	}
-	return router
 
+	admin.Use(middleware.CheckJwtValid, middleware.CheckAdmin)
+	{
+		admin.GET("/goods", handler.GetGoods)
+		admin.POST("/goods", handler.AddGoods)
+		admin.PUT("/goods/:id", handler.UpdateGoods)
+		admin.DELETE("/goods/:id", handler.DelGoods)
+	}
+
+	return router
 }
