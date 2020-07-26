@@ -5,4 +5,5 @@ var AllSchema = []interface{}{
 	&Transfer{},
 	&Order{},
 	&Announcement{},
+	&Goods{},
 }
