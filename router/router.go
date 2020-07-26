@@ -23,8 +23,8 @@ func SetupRouters() *gin.Engine {
 	{
 		admin.GET("/goods", handler.GetGoods)
 		admin.POST("/goods", handler.AddGoods)
-		admin.PUT("/goods/:id", handler.UpdateGoods)
-		admin.DELETE("/goods/:id", handler.DelGoods)
+		admin.PUT("/goods", handler.UpdateGoods)
+		admin.DELETE("/goods", handler.DeleteGoods)
 	}
 
 	return router
