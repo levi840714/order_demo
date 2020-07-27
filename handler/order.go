@@ -15,7 +15,7 @@ type DepositData struct {
 func Deposit(c *gin.Context) {
 	var request DepositData
 	accountId := c.MustGet("accountId").(int)
-	if err := c.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}

@@ -15,10 +15,11 @@ type RegisterAccount struct {
 
 func Register(c *gin.Context) {
 	var request RegisterAccount
-	if err := c.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
+
 	ok, err := model.RegisterAccount(request.Account, request.Password)
 	if !ok {
 		c.JSON(500, gin.H{"code": 1, "msg": err.Error(), "data": ""})
@@ -34,10 +35,11 @@ type LoginAccount struct {
 
 func Login(c *gin.Context) {
 	var request LoginAccount
-	if err := c.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
+
 	accountData, err := model.CheckLogin(request.Account, request.Password)
 	if err != nil {
 		c.JSON(500, gin.H{"code": 1, "msg": err.Error(), "data": ""})

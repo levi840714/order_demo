@@ -11,8 +11,8 @@ func SetupRouters() *gin.Engine {
 	router := gin.Default()
 	router.POST("/login", handler.Login)
 	router.POST("/register", handler.Register)
-	admin := router.Group("/admin")
 	api := router.Group("/api")
+	admin := router.Group("/admin")
 
 	api.Use(middleware.CheckJwtValid)
 	{
@@ -24,7 +24,7 @@ func SetupRouters() *gin.Engine {
 		admin.GET("/goods", handler.GetGoods)
 		admin.POST("/goods", handler.AddGoods)
 		admin.PUT("/goods", handler.UpdateGoods)
-		admin.DELETE("/goods", handler.DeleteGoods)
+		admin.DELETE("/goods/:id", handler.DeleteGoods)
 	}
 
 	return router

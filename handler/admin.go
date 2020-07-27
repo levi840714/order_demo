@@ -3,57 +3,86 @@ package handler
 import (
 	"order_demo/lib/logger"
 	"order_demo/model"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
-type Goods struct {
+type GoodStatus struct {
+	Status string `form:"status" binding:"required"`
 }
 
 func GetGoods(c *gin.Context) {
+	var request GoodStatus
+	if err := c.Bind(&request); err != nil {
+		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
+		return
+	}
+
+	goods, err := model.GetGoods(request.Status)
+	if err != nil {
+		logger.Error.Println(err.Error())
+		c.JSON(500, gin.H{"code": 1, "msg": "Get goods failed", "data": ""})
+		return
+	}
+	c.JSON(200, gin.H{"code": 0, "msg": "", "data": goods})
 
 }
 
 type Add struct {
-	Good   string  `json:"good" binding:"required"`
+	Goods  string  `json:"goods" binding:"required"`
 	Amount float64 `json:"amount" binding:"required"`
 }
 
 func AddGoods(c *gin.Context) {
 	var request Add
-	if err := c.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
 
-	id, err := model.AddGoods(request.Good, request.Amount)
+	id, err := model.AddGoods(request.Goods, request.Amount)
 	if err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Add Goods failed", "data": ""})
 		return
 	}
-	c.JSON(200, gin.H{"code": 0, "msg": "", "data": map[string]int{"id": id}})
+	c.JSON(201, gin.H{"code": 0, "msg": "", "data": map[string]int{"id": id}})
 	return
 
 }
 
+type UpdateId struct {
+	ID     int     `json:"id" binding:"required"`
+	Goods  string  `json:"goods"`
+	Amount float64 `json:"amount"`
+}
+
 func UpdateGoods(c *gin.Context) {
-
-}
-
-type Delete struct {
-	ID     int    `json:"id"  binding:"required"`
-	Status string `json:"status"  binding:"required"`
-}
-
-func DeleteGoods(c *gin.Context) {
-	var request Delete
-	if err := c.ShouldBindBodyWith(&request, binding.JSON); err != nil {
+	var request UpdateId
+	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
 		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
 		return
 	}
-	if err := model.DeleteGoods(request.ID, request.Status); err != nil {
+
+	if err := model.UpdateGoods(request.ID, request.Goods, request.Amount); err != nil {
+		logger.Error.Println(err.Error())
+		c.JSON(500, gin.H{"code": 1, "msg": "Update goods failed", "data": ""})
+		return
+	}
+	c.JSON(200, gin.H{"code": 0, "msg": "Update goods success", "data": ""})
+}
+
+func DeleteGoods(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"code": 1, "msg": err.Error(), "data": ""})
+		return
+	}
+
+	if err := model.DeleteGoods(id); err != nil {
+		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Delete goods failed", "data": ""})
 		return
 	}

@@ -3,13 +3,12 @@ package model
 import (
 	"errors"
 	"order_demo/lib/hash"
-	"order_demo/lib/logger"
 	"time"
 )
 
 const (
-	StatusStop = "0"
-	StatusOK   = "1"
+	AccountStatusStop = "0"
+	AccountStatusOK   = "1"
 )
 
 type Account struct {
@@ -28,7 +27,7 @@ func (Account) TableName() string {
 
 func RegisterAccount(account string, password string) (bool, error) {
 	hash, _ := hash.HashPassword(password)
-	createData := Account{Account: account, Password: hash, Status: "1", Balance: 0.0, CreateAt: time.Now()}
+	createData := Account{Account: account, Password: hash, Status: AccountStatusOK, Balance: 0.0, CreateAt: time.Now()}
 	if err := DB.Create(&createData).Error; err != nil {
 		return false, err
 	}
@@ -46,7 +45,7 @@ func GetAccount(accountId int) (*Account, error) {
 
 func CheckLogin(account string, password string) (*Account, error) {
 	var accountData Account
-	if err := DB.Select("id, password, role").Where("account = ? AND status = ?", account, StatusOK).Find(&accountData).Error; err != nil {
+	if err := DB.Select("id, password, role").Where("account = ? AND status = ?", account, AccountStatusOK).Find(&accountData).Error; err != nil {
 		return nil, errors.New("wrong Account")
 	}
 	check := hash.CheckPasswordHash(password, accountData.Password)
@@ -58,8 +57,7 @@ func CheckLogin(account string, password string) (*Account, error) {
 
 func UpdateBalance(accountId int, amount float64) (float64, error) {
 	var accountData Account
-	if err := TX.Set("gorm:query_option", "FOR UPDATE").Where("id = ? AND status = ?", accountId, StatusOK).Find(&accountData).Error; err != nil {
-		logger.Error.Println(err.Error())
+	if err := TX.Set("gorm:query_option", "FOR UPDATE").Where("id = ? AND status = ?", accountId, AccountStatusOK).Find(&accountData).Error; err != nil {
 		return 0, err
 	}
 	accountData.Balance += amount
