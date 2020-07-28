@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	AccountStatusStop = "0"
+	AccountStatusFail = "0"
 	AccountStatusOK   = "1"
 )
 
@@ -27,7 +27,7 @@ func (Account) TableName() string {
 
 func RegisterAccount(account string, password string) (bool, error) {
 	hash, _ := hash.HashPassword(password)
-	createData := Account{Account: account, Password: hash, Status: AccountStatusOK, Balance: 0.0, CreateAt: time.Now()}
+	createData := Account{Account: account, Password: hash, Status: AccountStatusOK, Role: 2, Balance: 0.0, CreateAt: time.Now()}
 	if err := DB.Create(&createData).Error; err != nil {
 		return false, err
 	}

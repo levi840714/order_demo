@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	GoodStatusStop = "0"
-	GoodStatusOK   = "1"
+	GoodsStatusFail = "0"
+	GoodsStatusOK   = "1"
 )
 
 type Goods struct {
@@ -31,7 +31,7 @@ func GetGoods(status string) (*[]Goods, error) {
 }
 
 func AddGoods(goods string, amount float64) (int, error) {
-	insert := Goods{Goods: goods, Amount: amount, Status: GoodStatusOK, CreateAt: time.Now()}
+	insert := Goods{Goods: goods, Amount: amount, Status: GoodsStatusOK, CreateAt: time.Now()}
 	if err := DB.Create(&insert).Error; err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func UpdateGoods(id int, goods string, amount float64) error {
 
 func DeleteGoods(id int) error {
 	delete := Goods{ID: id}
-	if err := DB.Model(&delete).Update("status", GoodStatusStop).Error; err != nil {
+	if err := DB.Model(&delete).Update("status", GoodsStatusFail).Error; err != nil {
 		return err
 	}
 	return nil
