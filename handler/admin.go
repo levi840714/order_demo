@@ -88,3 +88,20 @@ func DeleteGoods(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"code": 0, "msg": "Delete success", "data": ""})
 }
+
+func GetTodaySummary(c *gin.Context) {
+	var orderList = make(map[string]map[string]float64)
+	orders, err := model.GetTodayOrder(0)
+	if err != nil {
+		logger.Error.Println(err.Error())
+		c.JSON(500, gin.H{"code": 1, "msg": "Get today order failed", "data": ""})
+		return
+	}
+	for _, v := range *orders {
+		if orderList[v.Account] == nil {
+			orderList[v.Account] = make(map[string]float64)
+		}
+		orderList[v.Account][v.Goods] += v.Amount
+	}
+	c.JSON(200, gin.H{"code": 0, "msg": "", "data": orderList})
+}

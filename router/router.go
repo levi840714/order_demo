@@ -30,6 +30,7 @@ func SetupRouters() *gin.Engine {
 		admin.POST("/goods", handler.AddGoods)
 		admin.PUT("/goods", handler.UpdateGoods)
 		admin.DELETE("/goods/:id", handler.DeleteGoods)
+		admin.GET("/summaryList", handler.GetTodaySummary)
 	}
 
 	return router

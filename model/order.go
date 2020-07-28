@@ -39,6 +39,7 @@ func DeleteOrder(id int) error {
 
 type OrderInfo struct {
 	ID        int       `gorm:"column:id" json:"id"`
+	Account   string    `gorm:"column:account" json:"account"`
 	Goods     string    `gorm:"column:goods" json:"goods"`
 	Amount    float64   `gorm:"column:amount" json:"amount"`
 	Status    string    `gorm:"column:status" json:"status"`
@@ -47,10 +48,13 @@ type OrderInfo struct {
 
 func GetTodayOrder(accountId int) (*[]OrderInfo, error) {
 	var orders []OrderInfo
+	id := Order{AccountId: accountId}
 	today := time.Now().Format("2006-01-02")
 	if err := DB.Table("order").Joins("JOIN goods ON goods.id = order.goodsId").
-		Select("goods.goods, goods.amount, order.id, order.status, order.orderTime").
-		Where("accountId = ? AND orderTime BETWEEN ? AND ?", accountId, today+" 00:00:00", today+" 23:59:59").Find(&orders).Error; err != nil {
+		Joins("JOIN account ON account.id = order.accountId").
+		Select("account.account, goods.goods, goods.amount, order.id, order.status, order.orderTime").
+		Where(id).
+		Where("orderTime BETWEEN ? AND ?", today+" 00:00:00", today+" 23:59:59").Find(&orders).Error; err != nil {
 		return nil, err
 	}
 	return &orders, nil
