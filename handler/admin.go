@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+const GetAllOrder = 0
+
 type GoodStatus struct {
 	Status string `form:"status" binding:"required"`
 }
@@ -27,7 +29,6 @@ func GetGoods(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"code": 0, "msg": "", "data": goods})
-
 }
 
 type Add struct {
@@ -49,8 +50,6 @@ func AddGoods(c *gin.Context) {
 		return
 	}
 	c.JSON(201, gin.H{"code": 0, "msg": "", "data": map[string]int{"id": id}})
-	return
-
 }
 
 type UpdateId struct {
@@ -90,18 +89,30 @@ func DeleteGoods(c *gin.Context) {
 }
 
 func GetTodaySummary(c *gin.Context) {
+	var count, total float64
 	var orderList = make(map[string]map[string]float64)
-	orders, err := model.GetTodayOrder(0)
+
+	orders, err := model.GetTodayOrder(GetAllOrder)
 	if err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Get today order failed", "data": ""})
 		return
 	}
+
 	for _, v := range *orders {
+		count++
+		total += v.Amount
 		if orderList[v.Account] == nil {
 			orderList[v.Account] = make(map[string]float64)
 		}
 		orderList[v.Account][v.Goods] += v.Amount
 	}
+
+	if orderList["summary"] == nil {
+		orderList["summary"] = make(map[string]float64)
+	}
+	orderList["summary"]["count"] = count
+	orderList["summary"]["total"] = total
+
 	c.JSON(200, gin.H{"code": 0, "msg": "", "data": orderList})
 }
