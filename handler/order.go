@@ -58,12 +58,36 @@ func NewOrder(c *gin.Context) {
 		return
 	}
 
-	id, err := model.NewOrder(accountId, request.GoodsId)
-	if err != nil {
+	accountInfo, e := model.GetAccountInfo(accountId)
+	GoodsInfo, err := model.GetGoodsInfo(request.GoodsId)
+	if e != nil || err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(500, gin.H{"code": 1, "msg": "Order failed", "data": ""})
 		return
 	}
+
+	if accountInfo.Balance < GoodsInfo.Amount {
+		c.JSON(400, gin.H{"code": 1, "msg": "Balance not enough", "data": ""})
+		return
+	}
+
+	model.TX = model.DB.Begin()
+	id, err := model.NewOrder(accountId, request.GoodsId)
+	if err != nil {
+		model.TX.Rollback()
+		logger.Error.Println(err.Error())
+		c.JSON(500, gin.H{"code": 1, "msg": "Order failed", "data": ""})
+		return
+	}
+
+	if _, err := model.UpdateBalance(accountId, GoodsInfo.Amount*-1); err != nil {
+		model.TX.Rollback()
+		logger.Error.Println(err.Error())
+		c.JSON(500, gin.H{"code": 1, "msg": "Order failed", "data": ""})
+		return
+	}
+
+	model.TX.Commit()
 	c.JSON(201, gin.H{"code": 0, "msg": "", "data": map[string]int{"id": id}})
 }
 

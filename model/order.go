@@ -23,7 +23,7 @@ func (Order) TableName() string {
 
 func NewOrder(accountId int, goodsId int) (int, error) {
 	insert := Order{AccountId: accountId, GoodsId: goodsId, Status: OrderStatusOk, OrderTime: time.Now()}
-	if err := DB.Create(&insert).Error; err != nil {
+	if err := TX.Create(&insert).Error; err != nil {
 		return 0, err
 	}
 	return insert.ID, nil

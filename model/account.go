@@ -35,7 +35,7 @@ func RegisterAccount(account string, password string) (bool, error) {
 
 }
 
-func GetAccount(accountId int) (*Account, error) {
+func GetAccountInfo(accountId int) (*Account, error) {
 	var account Account
 	if err := DB.Where("id = ?", accountId).Find(&account).Error; err != nil {
 		return nil, err

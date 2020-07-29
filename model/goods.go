@@ -30,6 +30,14 @@ func GetGoods(status string) (*[]Goods, error) {
 
 }
 
+func GetGoodsInfo(goodsId int) (*Goods, error) {
+	var goods Goods
+	if err := DB.Where("id = ?", goodsId).Find(&goods).Error; err != nil {
+		return nil, err
+	}
+	return &goods, nil
+}
+
 func AddGoods(goods string, amount float64) (int, error) {
 	insert := Goods{Goods: goods, Amount: amount, Status: GoodsStatusOK, CreateAt: time.Now()}
 	if err := DB.Create(&insert).Error; err != nil {
