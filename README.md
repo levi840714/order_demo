@@ -1,6 +1,12 @@
 # order_demo
 Golang 訂餐系統API 練習
 
+## Docker快速佈署API環境
+
+```
+docker-compose up -d
+```
+
 ## schema
 
 **account (會員帳號)**
@@ -47,7 +53,7 @@ Golang 訂餐系統API 練習
 {
 	user1: {goods1: 20, goods2: 30},
 	user2: {goods1: 20, goods2: 40},
-	summary: {count: 4, sum: 110}
+	summary: {count: 4, total: 110}
 }
 ```
 
