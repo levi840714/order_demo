@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"order_demo/lib/compute"
 	"order_demo/lib/logger"
 	"order_demo/model"
 	"strconv"
@@ -105,7 +106,7 @@ func GetTodaySummary(c *gin.Context) {
 		if orderList[v.Account] == nil {
 			orderList[v.Account] = make(map[string]float64)
 		}
-		orderList[v.Account][v.Goods] += v.Amount
+		orderList[v.Account][v.Goods] = compute.Add(orderList[v.Account][v.Goods], v.Amount)
 	}
 
 	if orderList["summary"] == nil {

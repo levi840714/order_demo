@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"order_demo/lib/compute"
 	"order_demo/lib/hash"
 	"time"
 )
@@ -60,7 +61,7 @@ func UpdateBalance(accountId int, amount float64) (float64, error) {
 	if err := TX.Set("gorm:query_option", "FOR UPDATE").Where("id = ? AND status = ?", accountId, AccountStatusOK).Find(&accountData).Error; err != nil {
 		return 0, err
 	}
-	accountData.Balance += amount
+	accountData.Balance = compute.Add(accountData.Balance, amount)
 	if err := TX.Save(&accountData).Error; err != nil {
 		return 0, err
 	}
