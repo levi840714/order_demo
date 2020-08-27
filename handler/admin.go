@@ -16,6 +16,14 @@ type GoodStatus struct {
 	Status string `form:"status" binding:"required"`
 }
 
+// @Summary 查看餐點
+// @Tags Goods
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Param status query string true "查看餐點("0"=>"未上架", "1"=>"已上架")"
+// @Success 200 {string}} json "{"code": 0, "msg": "", "data": "{餐點}""}"
+// @Router /goods [get]
 func GetGoods(c *gin.Context) {
 	var request GoodStatus
 	if err := c.Bind(&request); err != nil {
@@ -37,6 +45,15 @@ type Add struct {
 	Amount float64 `json:"amount" binding:"required"`
 }
 
+// @Summary 新增餐點
+// @Tags Admin
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param payload body Add true "餐點資料"
+// @Success 200 {string} json "{"code": 0, "msg": "", "data": "id": "{餐點ID}"}"
+// @Router /admin/goods [post]
 func AddGoods(c *gin.Context) {
 	var request Add
 	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
@@ -59,6 +76,15 @@ type UpdateId struct {
 	Amount float64 `json:"amount"`
 }
 
+// @Summary 更新餐點
+// @Tags Admin
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param payload body UpdateId true "餐點資料"
+// @Success 200 {string} json "{"code": 0, "msg": "Update goods success", "data": ""}"
+// @Router /admin/goods/ [put]
 func UpdateGoods(c *gin.Context) {
 	var request UpdateId
 	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
@@ -74,6 +100,15 @@ func UpdateGoods(c *gin.Context) {
 	c.JSON(200, gin.H{"code": 0, "msg": "Update goods success", "data": ""})
 }
 
+// @Summary 刪除餐點
+// @Tags Admin
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param id path string true "餐點ID"
+// @Success 200 {string} json "{"code": 0, "msg": "Delete success", "data": ""}"
+// @Router /admin/goods/{id} [delete]
 func DeleteGoods(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -89,6 +124,14 @@ func DeleteGoods(c *gin.Context) {
 	c.JSON(200, gin.H{"code": 0, "msg": "Delete success", "data": ""})
 }
 
+// @Summary 今日訂餐總結算
+// @Tags Admin
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Success 200 {string} json "{"code": 0, "msg": "", "data": "點餐總計"}"
+// @Router /admin/summaryList [get]
 func GetTodaySummary(c *gin.Context) {
 	var count, total float64
 	var orderList = make(map[string]map[string]float64)

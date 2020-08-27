@@ -13,6 +13,14 @@ type RegisterAccount struct {
 	Password string `json:"password" binding:"required"` // 密碼
 }
 
+// @Summary 會員註冊
+// @Tags User
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Param payload body RegisterAccount true "註冊資料"
+// @Success 200 {string} json "{"code": 0, "msg": "Register success", "data": ""}"
+// @Router /register [post]
 func Register(c *gin.Context) {
 	var request RegisterAccount
 	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {
@@ -33,6 +41,14 @@ type LoginAccount struct {
 	Password string `json:"password" binding:"required"` // 密碼
 }
 
+// @Summary 會員登入
+// @Tags User
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Param payload body LoginAccount true "登入資料"
+// @Success 200 {string} json "{"code": 0, "msg": "Login success", "data": "{token}"}"
+// @Router /login [post]
 func Login(c *gin.Context) {
 	var request LoginAccount
 	if err := c.ShouldBindWith(&request, binding.JSON); err != nil {

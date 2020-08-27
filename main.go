@@ -9,10 +9,26 @@ import (
 	"order_demo/schema"
 	"time"
 
+	_ "order_demo/docs"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
+// @title Order_demo API
+// @version 1.0
+// @description order_demo example api
+
+// @contact.name Levi
+// @contact.url https://github.com/levi840714
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @securityDefinitions.apikey ApiToken
+// @in header
+// @name Authorization
+// @host localhost:8080
+// schemes http
 func main() {
 	var err error
 

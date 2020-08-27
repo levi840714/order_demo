@@ -1,0 +1,285 @@
+definitions:
+  handler.Add:
+    properties:
+      amount:
+        type: number
+      goods:
+        type: string
+    required:
+    - amount
+    - goods
+    type: object
+  handler.DepositData:
+    properties:
+      amount:
+        type: number
+    required:
+    - amount
+    type: object
+  handler.LoginAccount:
+    properties:
+      account:
+        description: 帳號
+        type: string
+      password:
+        description: 密碼
+        type: string
+    required:
+    - account
+    - password
+    type: object
+  handler.OrderData:
+    properties:
+      goodsId:
+        type: integer
+    required:
+    - goodsId
+    type: object
+  handler.RegisterAccount:
+    properties:
+      account:
+        description: 帳號
+        type: string
+      password:
+        description: 密碼
+        type: string
+    required:
+    - account
+    - password
+    type: object
+  handler.UpdateId:
+    properties:
+      amount:
+        type: number
+      goods:
+        type: string
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Levi
+    url: https://github.com/levi840714
+  description: order_demo example api
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Order_demo API
+  version: "1.0"
+paths:
+  /admin/goods:
+    post:
+      parameters:
+      - description: 餐點資料
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.Add'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "", "data": "id": "{餐點ID}"}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 新增餐點
+      tags:
+      - Admin
+  /admin/goods/:
+    put:
+      parameters:
+      - description: 餐點資料
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateId'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Update goods success", "data": ""}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 更新餐點
+      tags:
+      - Admin
+  /admin/goods/{id}:
+    delete:
+      parameters:
+      - description: 餐點ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Delete success", "data": ""}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 刪除餐點
+      tags:
+      - Admin
+  /admin/summaryList:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "", "data": "點餐總計"}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 今日訂餐總結算
+      tags:
+      - Admin
+  /api/deposit:
+    post:
+      parameters:
+      - description: 充值金額
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.DepositData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Transfer success!", "data": {"transferId": {充值單號}, "balance": {目前餘額}}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 充值
+      tags:
+      - User
+  /api/order:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "", "data": "{訂單}"}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 取得今日訂單
+      tags:
+      - Order
+    post:
+      parameters:
+      - description: 餐點ID
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.OrderData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "", "data": "{"id": 訂單號}"}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 送出訂單
+      tags:
+      - Order
+  /api/order/{id}:
+    delete:
+      parameters:
+      - description: 訂單ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Delete success", "data": ""}'
+          schema:
+            type: string
+      security:
+      - ApiToken: []
+      summary: 刪除訂單
+      tags:
+      - Order
+  /goods:
+    get:
+      parameters:
+      - description: 查看餐點(
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "", "data": "{餐點}""}'
+          schema:
+            type: string
+      summary: 查看餐點
+      tags:
+      - Goods
+  /login:
+    post:
+      parameters:
+      - description: 登入資料
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Login success", "data": "{token}"}'
+          schema:
+            type: string
+      summary: 會員登入
+      tags:
+      - User
+  /register:
+    post:
+      parameters:
+      - description: 註冊資料
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 0, "msg": "Register success", "data": ""}'
+          schema:
+            type: string
+      summary: 會員註冊
+      tags:
+      - User
+securityDefinitions:
+  ApiToken:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -4,11 +4,18 @@ import (
 	"order_demo/handler"
 	"order_demo/lib/middleware"
 
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouters() *gin.Engine {
 	router := gin.Default()
+
+	if mode := gin.Mode(); mode == gin.DebugMode {
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	router.POST("/login", handler.Login)
 	router.POST("/register", handler.Register)

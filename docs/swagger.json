@@ -1,0 +1,456 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "order_demo example api",
+        "title": "Order_demo API",
+        "contact": {
+            "name": "Levi",
+            "url": "https://github.com/levi840714"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/admin/goods": {
+            "post": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "新增餐點",
+                "parameters": [
+                    {
+                        "description": "餐點資料",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.Add"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"\", \"data\": \"id\": \"{餐點ID}\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/goods/": {
+            "put": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "更新餐點",
+                "parameters": [
+                    {
+                        "description": "餐點資料",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateId"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Update goods success\", \"data\": \"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/goods/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "刪除餐點",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "餐點ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Delete success\", \"data\": \"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/summaryList": {
+            "get": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "今日訂餐總結算",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"\", \"data\": \"點餐總計\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/deposit": {
+            "post": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "充值",
+                "parameters": [
+                    {
+                        "description": "充值金額",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.DepositData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Transfer success!\", \"data\": {\"transferId\": {充值單號}, \"balance\": {目前餘額}}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/order": {
+            "get": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "取得今日訂單",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"\", \"data\": \"{訂單}\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "送出訂單",
+                "parameters": [
+                    {
+                        "description": "餐點ID",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.OrderData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"\", \"data\": \"{\"id\": 訂單號}\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/order/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "刪除訂單",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "訂單ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Delete success\", \"data\": \"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/goods": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Goods"
+                ],
+                "summary": "查看餐點",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "查看餐點(",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"\", \"data\": \"{餐點}\"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "會員登入",
+                "parameters": [
+                    {
+                        "description": "登入資料",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Login success\", \"data\": \"{token}\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "會員註冊",
+                "parameters": [
+                    {
+                        "description": "註冊資料",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.RegisterAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 0, \"msg\": \"Register success\", \"data\": \"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.Add": {
+            "type": "object",
+            "required": [
+                "amount",
+                "goods"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "goods": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.DepositData": {
+            "type": "object",
+            "required": [
+                "amount"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "handler.LoginAccount": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "description": "帳號",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密碼",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.OrderData": {
+            "type": "object",
+            "required": [
+                "goodsId"
+            ],
+            "properties": {
+                "goodsId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.RegisterAccount": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "description": "帳號",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密碼",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UpdateId": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "goods": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiToken": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

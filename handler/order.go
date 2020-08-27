@@ -13,6 +13,15 @@ type DepositData struct {
 	Amount float64 `json:"amount" binding:"required"`
 }
 
+// @Summary 充值
+// @Tags User
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param payload body DepositData true "充值金額"
+// @Success 200 {string} json "{"code": 0, "msg": "Transfer success!", "data": {"transferId": {充值單號}, "balance": {目前餘額}}"
+// @Router /api/deposit [post]
 func Deposit(c *gin.Context) {
 	var request DepositData
 	accountId := c.MustGet("accountId").(int)
@@ -50,6 +59,15 @@ type OrderData struct {
 	GoodsId int `json:"goodsId" binding:"required"`
 }
 
+// @Summary 送出訂單
+// @Tags Order
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param payload body OrderData true "餐點ID"
+// @Success 200 {string} json "{"code": 0, "msg": "", "data": "{"id": 訂單號}"}"
+// @Router /api/order [post]
 func NewOrder(c *gin.Context) {
 	var request OrderData
 	accountId := c.MustGet("accountId").(int)
@@ -91,6 +109,15 @@ func NewOrder(c *gin.Context) {
 	c.JSON(201, gin.H{"code": 0, "msg": "", "data": map[string]int{"id": id}})
 }
 
+// @Summary 刪除訂單
+// @Tags Order
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Param id path string true "訂單ID"
+// @Success 200 {string} json "{"code": 0, "msg": "Delete success", "data": ""}"
+// @Router /api/order/{id} [delete]
 func DeleteOrder(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -106,6 +133,14 @@ func DeleteOrder(c *gin.Context) {
 	c.JSON(200, gin.H{"code": 0, "msg": "Delete success", "data": ""})
 }
 
+// @Summary 取得今日訂單
+// @Tags Order
+// @version 1.0
+// @Accpet json
+// @Produce json
+// @Security ApiToken
+// @Success 200 {string} json "{"code": 0, "msg": "", "data": "{訂單}"}"
+// @Router /api/order [get]
 func GetTodayOrder(c *gin.Context) {
 	accountId := c.MustGet("accountId").(int)
 	orders, err := model.GetTodayOrder(accountId)
