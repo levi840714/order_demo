@@ -7,6 +7,12 @@ Golang 訂餐系統API 練習
 docker-compose up -d
 ```
 
+## Swagger API Demo
+
+```
+http://localhost:8080/swagger/index.html
+```
+
 ## schema
 
 **account (會員帳號)**
