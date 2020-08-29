@@ -45,6 +45,9 @@ http://localhost:8080/swagger/index.html
 
 ### admin router
 
+#### Middleware
+用middleware驗證JWT內的 **role=1** 才能做以下的動作，其他一律導向到 401 你沒有權限
+
 設一個 Group admin router
 
 - 新增公告 (addAnno) 
@@ -63,13 +66,12 @@ http://localhost:8080/swagger/index.html
 }
 ```
 
-用一個middleware的驗證 role=1 才能做以上的動作，其他一律導向到 401 你沒有權限
-
 執行產生今天的訂餐報表(只能做一次，做完後使用者不能再取消訂錯的便當，也不能再追加訂便當) 使用announcement
 
 
 ### user router
 
+#### Middleware
 以下使用者功能 必需先登入 使用 jwt 派給 bearer token 才能操作
 
 設一個 Group api router
